@@ -204,6 +204,9 @@ class Client(object):
         except Exception as e:
             raise googlemaps.exceptions.TransportError(e)
 
+        if resp.json()['status'] == "UNKNOWN_ERROR":
+            raise googlemaps.exceptions.ApiError(500, "UNKNOWN_ERROR")
+
         if resp.status_code in _RETRIABLE_STATUSES:
             # Retry request.
             return self._get(url, params, first_request_time, retry_counter + 1,
